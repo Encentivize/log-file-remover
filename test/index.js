@@ -4,7 +4,7 @@ var fn = require('hactarjs');
 var CronJob = require('cron').CronJob;
 
 /*js to test*/
-var winstonLogRemover = require('../src/index.js');
+var logFileRemover = require('../src/index.js');
 
 /*config*/
 var config = {
@@ -25,7 +25,7 @@ var config = {
 
 //run every second!!!
 generateFakeLogFiles('logs/fakeLogFile', 6);
-winstonLogRemover.schedule(config);
+logFileRemover.schedule(config);
 
 function generateFakeLogFiles(filePath, numberToGenerate){
 	for (var i = 0; i < numberToGenerate; i++){

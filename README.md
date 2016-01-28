@@ -1,5 +1,6 @@
 # log-file-remover
 A tool to automate removal of generated logs after a set amount of time.
+For the commandline and also for inclusion in other node apps.
 
 ##Install
   npm install log-file-remover
@@ -8,10 +9,15 @@ A tool to automate removal of generated logs after a set amount of time.
   - require the library in your code
   - entry point is index.js
 
+  I suggest the use of the node async library, to asynchronously schedule the removal of log files.
+
   ```javascript
   var logRemover = require('log-file-remover');
   logRemover.schedule(config);
   ```
+
+##Commandline
+
 
 ##Config JSON Object
 The library will accept a custom config object being passed into the schedule function. If no object is passed through then the default config will be used.

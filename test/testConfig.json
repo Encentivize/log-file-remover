@@ -1,0 +1,15 @@
+{
+    "timeZone": "Africa/Johannesburg",
+    "logging": {
+        "file": {
+            "folder": "/logs",
+            "retention": {
+                "units": "hours",
+                "amount": 7
+            },
+            "timeToTake": "mtime"
+        },
+        "startTheJobAutomatically": true,
+        "cronTime": "* * * * * *"   
+    }
+}

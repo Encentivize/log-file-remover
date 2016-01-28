@@ -1,21 +1,24 @@
+#!/usr/bin/env node
 /* jshint node: true */
 'use strict';
 var fs = require('fs');
 var path = require('path');
+var program = require('commander');
+var pkg = require(path.join(__dirname, '../package.json'));
 var CronJob = require('cron').CronJob;
-var config = require('config');
+var config = null;
 var appRootPath = require('app-root-path');
 var moment = require('moment');
 var cronTimers = require('./cron-timers.js');
 
 /*configs*/
-var startTheJobAutomatically = true; //if false, remember to call job.start(), assuming job is the variable you set the cron job to.
-var fileLogPath = appRootPath.resolve(config.get('logging.file.folder'));
-var retentionAmount = config.get('logging.file.retention.amount');
-var retentionUnits = config.get('logging.file.retention.units');
-var cronTime = config.get('logging.cronTime');
-var timezone = config.get('timeZone');
-var timeToTake = config.get('logging.file.timeToTake');
+var startTheJobAutomatically = false; //if false, remember to call job.start(), assuming job is the variable you set the cron job to.
+var fileLogPath = null;
+var retentionAmount = null;
+var retentionUnits = null;
+var cronTime = null;
+var timezone = null;
+var timeToTake = null;
 var fileRemovalThreshold = null;
 
 var exposed = {
@@ -23,6 +26,40 @@ var exposed = {
 };
 
 module.exports = exposed;
+
+/*commandline*/
+program
+    .version(pkg.version)
+    .option('-c, --config <configPath>', 'Configuration to use')
+    .option('-h, --help', 'Command usage')
+    .option('-s, --silent', 'Silent mode, no console logging')
+    .parse(process.argv);
+
+if(process.argv.indexOf("-h") > -1 || process.argv.indexOf("--help") > -1){
+    help();
+}
+else if (process.argv.indexOf("-c") > -1 || process.argv.indexOf("--config") > -1){
+    var configPath = program.config;
+    var config = require(configPath);
+    schedule(config);
+}
+else if (process.argv.indexOf("-s") > -1 || process.argv.indexOf("--silent") > -1){
+    console.warn("Not Yet Implemented");
+}
+else{
+    help();
+}
+
+function help(){
+    console.log("log-file-remover");
+    console.log("version: %s", pkg.version);
+    console.log("\nUsage:");
+    console.log("-c --config <configPath> Configuration to use");
+    console.log("-s --silent Silent mode, no console logging");
+    console.log("-h --help Command usage");
+    console.log("\nExample:");
+    console.log("log-file-remover --config config.json");
+}
 
 function schedule(config, callback) {
     configure(config);
@@ -41,6 +78,15 @@ function configure(config){
         timeToTake = config.logging.file.timeToTake;
     }
     else{
+        config = require('config');
+        startTheJobAutomatically = true; //if false, remember to call job.start(), assuming job is the variable you set the cron job to.
+        fileLogPath = appRootPath.resolve(config.get('logging.file.folder'));
+        retentionAmount = config.get('logging.file.retention.amount');
+        retentionUnits = config.get('logging.file.retention.units');
+        cronTime = config.get('logging.cronTime');
+        timezone = config.get('timeZone');
+        timeToTake = config.get('logging.file.timeToTake');
+        fileRemovalThreshold = null;
         console.log('remove old logs, using default configuration settings');
     }
 

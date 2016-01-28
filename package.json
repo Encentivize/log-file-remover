@@ -1,7 +1,7 @@
 {
   "name": "log-file-remover",
   "version": "0.1.19",
-  "description": "A tool to automate removal of generated logs after a set amount of time.",
+  "description": "A tool to automate removal of generated logs after a set amount of time. For the commandline and also for inclusion in other node apps.",
   "main": "src/index.js",
   "scripts": {
     "test": "node test/index.js"
@@ -26,15 +26,20 @@
   "homepage": "https://github.com/Encentivize/log-file-remover#readme",
   "dependencies": {
     "app-root-path": "1.0.0",
+    "commander": "^2.9.0",
     "config": "1.19.0",
     "cron": "1.1.0",
     "gulp": "3.9.0",
     "gulp-jshint": "2.0.0",
     "hactarjs": "0.0.1",
     "jshint": "2.9.1",
-    "moment": "2.11.1"
+    "moment": "2.11.1",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "util": "0.10.3"
+  },
+  "bin": {
+    "log-file-remover" : "src/index.js"
   }
 }
