@@ -31,23 +31,17 @@ module.exports = exposed;
 program
     .version(pkg.version)
     .option('-c, --config <configPath>', 'Configuration to use')
-    .option('-h, --help', 'Command usage')
     .option('-s, --silent', 'Silent mode, no console logging')
     .parse(process.argv);
 
-if(process.argv.indexOf("-h") > -1 || process.argv.indexOf("--help") > -1){
-    help();
-}
-else if (process.argv.indexOf("-c") > -1 || process.argv.indexOf("--config") > -1){
+if (program.config){
     var configPath = program.config;
     var config = require(configPath);
+    console.log(config);
     schedule(config);
 }
-else if (process.argv.indexOf("-s") > -1 || process.argv.indexOf("--silent") > -1){
+else if (program.silent){
     console.warn("Not Yet Implemented");
-}
-else{
-    help();
 }
 
 function help(){
