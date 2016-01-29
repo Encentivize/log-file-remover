@@ -6,7 +6,6 @@ var path = require('path');
 var program = require('commander');
 var pkg = require(path.join(__dirname, '../package.json'));
 var CronJob = require('cron').CronJob;
-var config = null;
 var appRootPath = require('app-root-path');
 var moment = require('moment');
 var cronTimers = require('./cron-timers.js');
@@ -36,12 +35,17 @@ program
 
 if (program.config){
     var configPath = program.config;
-    var config = require(configPath);
+    var config = require(appRootPath.resolve(configPath));
     console.log(config);
     schedule(config);
 }
 else if (program.silent){
     console.warn("Not Yet Implemented");
+    //hack TODO: fix later
+        if (!DEBUG_MODE_ON) {
+        console = console || {};
+        console.log = function(){};
+    }
 }
 
 function help(){
@@ -59,7 +63,9 @@ function schedule(config, callback) {
     configure(config);
     var job = new CronJob(cronTime, onTick, onComplete, startTheJobAutomatically, timezone);
     console.log('Scheduled the remove old logs job');
-    callback = {job:job};
+    if (callback){
+        callback(job, null);
+    }
 }
 
 function configure(config){
@@ -90,7 +96,7 @@ function configure(config){
 
     var today = moment.utc();
     fileRemovalThreshold = moment(today).subtract(retentionAmount, retentionUnits);
-    console.log('File Removal Threshold: '+fileRemovalThreshold+'\ndate'+moment());
+    console.log('File Removal Threshold: '+fileRemovalThreshold);
 }
 
 function onTick(jobDone) {
